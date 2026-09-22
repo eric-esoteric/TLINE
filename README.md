@@ -1,25 +1,69 @@
-This is a bare-bones Android Studio project implementing <a href="https://github.com/alfredh/baresip">baresip</a> library based calling and messaging User Agent for Android. Its development is motivated by need for a secure, privacy focused User Agent that does not depend on third party push notification services.
+<h1 align="center">
+  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png" width="112" alt="TLINE"><br>
+  TLINE
+</h1>
 
-Currently baresip supports SIP and mobile voice calls and messages.  In addition, voice conference calls, voicemail Message Waiting Indication as well as blind and attended call transfers are available when SIP is used. MMS messaging is not supported yet.
+<p align="center"><b>SIP-телефон для Android, который понимает переключения TRELAY.</b></p>
 
-In SIP calls audio can be coded with Opus, AMR, Codec2, G.729, G.722, G.722.1, or PCMU/PCMA codecs. Security is achieved via TLS or WSS SIP signaling transport and ZRTP or (DTLS) SRTP media encapsulation.
+<p align="center">
+  <img src="https://img.shields.io/badge/Android-9%2B-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android 9+">
+  <img src="https://img.shields.io/badge/Kotlin-2.2-7F52FF?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin">
+  <img src="https://img.shields.io/badge/package-com.tline.phone-E48950?style=flat-square" alt="com.tline.phone">
+  <img src="https://img.shields.io/badge/license-BSD--3--Clause-59636E?style=flat-square" alt="BSD-3-Clause">
+</p>
 
-This application can be installed on Android devices running Android version 9 or later.  Mobile calling and messaging requires Android version 10 or later.
+<p align="center">
+  <img src="docs/tline-screenshot.jpg" width="320" alt="Главный экран TLINE">
+</p>
 
-If you need video calling and have a device that supports Camera2 API, you can instead of this application install its sister application baresip+ from the video branch.
+**TLINE** — Android-клиент SIP-телефонии на базе
+[baresip-studio](https://github.com/juha-h/baresip-studio) и библиотеки
+[baresip](https://github.com/baresip/baresip). От исходного приложения он сохраняет зрелое
+телефонное ядро, но получает отдельный пакет `com.tline.phone`, интерфейс TLINE и прямую связку с
+[TRELAY](../TRELAY-Android).
 
-After cloning the project, generate static libraries and include files to distribution directory using master branch of <a href="https://github.com/juha-h/libbaresip-android">libbaresip-android</a>.
+## Зачем TLINE нужен TRELAY
 
-Then in Android Studio (tested with Android Studio Quail 3):
+TRELAY отвечает за VPN-маршрут телефонии и резервные серверы. Когда активный сервер меняется,
+TRELAY адресно сообщает об этом TLINE. Клиент пересоздаёт SIP-транспорт и сразу запускает
+перерегистрацию — не ждёт штатного таймера и не оставляет входящие звонки на старом маршруте.
 
-- Open an existing Android Studio project
+TLINE также показывает состояние телефонного маршрута TRELAY, умеет отвечать на входящий вызов
+прямо из уведомления и поддерживает полноэкранный экран вызова там, где это разрешает Android.
+Без TRELAY приложение остаётся обычным SIP-клиентом.
 
-- File -> Invalidate Caches ... -> Invalidate & Restart
+## Что изменено относительно исходного приложения
 
-- Build -> Generate Signed Bundle / APK ...
+- отдельный бренд, пакет и тёмный интерфейс TLINE;
+- быстрый экран добавления SIP-профиля;
+- немедленная перерегистрация при failover TRELAY и ручном pull-to-refresh;
+- состояние маршрута и сервера TRELAY на главном экране;
+- крупные кнопки входящего вызова и ответ из системного уведомления;
+- сторож регистрации и восстановление сервиса после выгрузки Android.
 
-Ready to be installed baresip app is available from <a href="https://f-droid.org/app/com.tutpro.baresip">F-Droid</a>, <a href="https://play.google.com/store/apps/details?id=com.tutpro.baresip">Play Store</a>, and from <a href="https://github.com/juha-h/baresip-studio/releases">GitHub</a>.  Signing certificate SHA-256 fingerprint of baresip and baresip+ APKs on GitHub is `fecc79c20ab725b9b78bb16a75ba9a04092822cf52ba32e4a437170a68020602`. Use `apksigner verify  --print-certs app-release.apk` to verify.
+## Сборка
 
-Language translations are managed via baresip <a href="https://hosted.weblate.org/projects/baresip/">Weblate</a> project.
+Нужны JDK 21, Android SDK Platform 37, NDK `29.0.14206865` и CMake `3.31.6`.
+Нативные библиотеки лежат в `distribution/`; инструкции по их пересборке находятся в подмодуле
+`libbaresip-android`.
 
-Copyright (c) 2018 TutPro Inc. Distributed under BSD-3-Clause license.
+```powershell
+$env:JAVA_HOME = 'D:\emulandroid\jbr'
+$env:ANDROID_HOME = 'C:\Users\Windows\AppData\Local\Android\Sdk'
+$env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
+./gradlew.bat --no-daemon :app:assembleDebug :app:testDebugUnitTest
+```
+
+APK после сборки: `app/build/outputs/apk/debug/app-debug.apk`.
+
+## Приватность
+
+TLINE не использует сторонние push-сервисы и не отправляет адресную книгу разработчику. SIP-логин,
+пароль, история и настройки хранятся локально на устройстве. Подробности — в
+[PrivacyPolicy.txt](PrivacyPolicy.txt).
+
+## Происхождение и лицензия
+
+Проект является производной работой от baresip-studio. Исходное авторство сохранено в
+[LICENSE](LICENSE); код распространяется по BSD-3-Clause. У отдельных нативных библиотек и кодеков
+есть собственные лицензии — они перечислены в приложении и в соответствующих исходных проектах.

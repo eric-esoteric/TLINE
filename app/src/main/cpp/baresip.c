@@ -3,6 +3,7 @@
 #include <jni.h>
 #include <aaudio/AAudio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <re.h>
 #include <baresip.h>
 #include "logger.h"
@@ -435,6 +436,35 @@ static void *loggingFunction(void *arg)
     return 0;
 }
 
+// baresip's own messages go to logcat directly. Piping stdout is not enough: the interesting lines
+// (SIP negotiation, media setup) are the ones you need when a call is refused on a real operator.
+static char g_log_path[512];
+static FILE *g_log_file;
+
+static void android_log_handler(uint32_t level, const char *msg)
+{
+    int prio;
+    switch (level) {
+        case LEVEL_DEBUG: prio = ANDROID_LOG_DEBUG; break;
+        case LEVEL_INFO:  prio = ANDROID_LOG_INFO;  break;
+        case LEVEL_WARN:  prio = ANDROID_LOG_WARN;  break;
+        default:          prio = ANDROID_LOG_ERROR; break;
+    }
+    __android_log_write(prio, "Baresip Lib", msg);
+    // Android throttles an app's logcat output, and the interesting lines (why a call was refused)
+    // are exactly the ones that get dropped, so keep a copy in the app's own folder.
+    if (!g_log_file && g_log_path[0]) {
+        g_log_file = fopen(g_log_path, "a");
+        if (g_log_file) setvbuf(g_log_file, NULL, _IOLBF, 0);
+    }
+    if (g_log_file) {
+        fputs(msg, g_log_file);
+        fflush(g_log_file);
+    }
+}
+
+static struct log android_log = { .h = android_log_handler };
+
 static int runLoggingThread()
 {
     setvbuf(stdout, 0, _IOLBF, 0);
@@ -474,7 +504,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved)
     return JNI_VERSION_1_6;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_BaresipService_baresipStart(
+JNIEXPORT void JNICALL Java_com_tline_phone_BaresipService_baresipStart(
         JNIEnv *env, jobject instance, jstring jPath, jstring jAddrs, jint jLogLevel,
         jstring jSoftware)
 {
@@ -500,6 +530,9 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_BaresipService_baresipStart(
         LOGE("failed to init libre");
         goto out;
     }
+
+    snprintf(g_log_path, sizeof g_log_path, "%s/native.log", path);
+    log_register_handler(&android_log);
 
     if (re_thread_check(true) == 0) {
         LOGI("attaching to re thread\n");
@@ -646,7 +679,7 @@ out:
     (*env)->ReleaseStringUTFChars(env, jSoftware, software);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_BaresipService_baresipStop(
+JNIEXPORT void JNICALL Java_com_tline_phone_BaresipService_baresipStop(
         JNIEnv *env, jobject obj, jboolean force)
 {
     (void)env;
@@ -655,7 +688,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_BaresipService_baresipStop(
     mqueue_push(mq, ID_UA_STOP_ALL, (void *)((long)force));
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1display_1name(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1display_1name(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -669,7 +702,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1display_1name(
         return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1display_1name(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1display_1name(
         JNIEnv *env, jobject obj, jlong acc, jstring jDn)
 {
     (void)obj;
@@ -683,7 +716,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1display_1name(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1aor(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1aor(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -693,7 +726,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1aor(
         return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1luri(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1luri(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -708,7 +741,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1luri(
     return (*env)->NewStringUTF(env, uri_buf);
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1auth_1user(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1auth_1user(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -722,7 +755,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1auth_1user(
         return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1auth_1user(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1auth_1user(
         JNIEnv *env, jobject obj, jlong acc, jstring jUser)
 {
     (void)obj;
@@ -736,7 +769,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1auth_1user(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1auth_1pass(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1auth_1pass(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -750,7 +783,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1auth_1pass(
         return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1auth_1pass(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1auth_1pass(
         JNIEnv *env, jobject obj, jlong acc, jstring jPass)
 {
     (void)obj;
@@ -764,7 +797,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1auth_1pass(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1outbound(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1outbound(
         JNIEnv *env, jobject obj, jlong acc, jint jIx)
 {
     (void)obj;
@@ -781,7 +814,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1outbound(
     }
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1outbound(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1outbound(
         JNIEnv *env, jobject obj, jlong acc, jstring jOb, jint jIx)
 {
     (void)obj;
@@ -796,7 +829,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1outbound(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1audio_1codec(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1audio_1codec(
         JNIEnv *env, jobject obj, jlong acc, jint ix)
 {
     (void)obj;
@@ -827,7 +860,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1audio_1codec(
     return (*env)->NewStringUTF(env, codec_buf);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1audio_1codecs(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1audio_1codecs(
         JNIEnv *env, jobject obj, jlong acc, jstring jCodecs)
 {
     (void)obj;
@@ -837,7 +870,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1audio_1codecs(
     return res;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1video_1codecs(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1video_1codecs(
         JNIEnv *env, jobject obj, jlong acc, jstring jCodecs)
 {
     (void)obj;
@@ -847,7 +880,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1video_1codecs(
     return res;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1regint(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1regint(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -858,7 +891,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1regint(
         return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1regint(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1regint(
         JNIEnv *env, jobject obj, jlong acc, jint jRegint)
 {
     (void)env;
@@ -867,7 +900,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1regint(
     return account_set_regint((struct account *)acc, regint);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_account_1check_1origin(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_account_1check_1origin(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -875,7 +908,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_account_1check_1origin(
     return account_check_origin((struct account *)acc);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_account_1set_1check_1origin(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_account_1set_1check_1origin(
         JNIEnv *env, jobject obj, jlong acc, jboolean value)
 {
     (void)env;
@@ -883,7 +916,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_account_1set_1check_1origin(
     account_set_check_origin((struct account *)acc, value);
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1mediaenc(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1mediaenc(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -895,7 +928,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1mediaenc(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1mediaenc(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1mediaenc(
         JNIEnv *env, jobject obj, jlong acc, jstring jMencid)
 {
     (void)obj;
@@ -909,7 +942,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1mediaenc(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1medianat(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1medianat(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -921,7 +954,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1medianat(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1medianat(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1medianat(
         JNIEnv *env, jobject obj, jlong acc, jstring jMedNat)
 {
     (void)obj;
@@ -935,7 +968,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1medianat(
     return res;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1sipnat(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1sipnat(
         JNIEnv *env, jobject obj, jlong acc, jstring jSipNat)
 {
     (void)obj;
@@ -949,7 +982,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1sipnat(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1stun_1uri(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1stun_1uri(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -978,7 +1011,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1stun_1uri(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1stun_1uri(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1stun_1uri(
         JNIEnv *env, jobject obj, jlong acc, jstring jUri)
 {
     (void)obj;
@@ -992,7 +1025,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1stun_1uri(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1stun_1user(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1stun_1user(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -1004,7 +1037,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1stun_1user(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1stun_1user(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1stun_1user(
         JNIEnv *env, jobject obj, jlong acc, jstring jUser)
 {
     (void)obj;
@@ -1018,7 +1051,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1stun_1user(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1stun_1pass(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1stun_1pass(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -1030,7 +1063,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1stun_1pass(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1stun_1pass(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1stun_1pass(
         JNIEnv *env, jobject obj, jlong acc, jstring jPass)
 {
     (void)obj;
@@ -1044,7 +1077,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1stun_1pass(
     return res;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1mwi(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1mwi(
         JNIEnv *env, jobject obj, jlong acc, jboolean value)
 {
     (void)env;
@@ -1052,7 +1085,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1mwi(
     return account_set_mwi((struct account *)acc, value);
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1vm_1uri(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1vm_1uri(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -1071,7 +1104,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1vm_1uri(
         return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1answermode(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1answermode(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -1079,7 +1112,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1answermode(
     return account_answermode((struct account *)acc);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1answermode(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1answermode(
         JNIEnv *env, jobject obj, jlong acc, jint jMode)
 {
     (void)env;
@@ -1088,7 +1121,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1answermode(
     return account_set_answermode((struct account *)acc, mode);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_account_1sip_1autoredirect(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_account_1sip_1autoredirect(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -1096,7 +1129,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_account_1sip_1autoredirec
     return account_sip_autoredirect((struct account *)acc);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_account_1set_1sip_1autoredirect(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_account_1set_1sip_1autoredirect(
         JNIEnv *env, jobject obj, jlong acc, jboolean allow)
 {
     (void)env;
@@ -1104,7 +1137,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_account_1set_1sip_1autoredire
     return account_set_sip_autoredirect((struct account *)acc, allow);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_account_1rtcp_1mux(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_account_1rtcp_1mux(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -1112,7 +1145,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_account_1rtcp_1mux(
     return account_rtcp_mux((struct account *)acc);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1rtcp_1mux(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1rtcp_1mux(
         JNIEnv *env, jobject obj, jlong acc, jboolean value)
 {
     (void)env;
@@ -1120,7 +1153,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1rtcp_1mux(
     return account_set_rtcp_mux((struct account *)acc, value);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1rel100_1mode(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1rel100_1mode(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -1128,7 +1161,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1rel100_1mode(
     return account_rel100_mode((struct account *)acc);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1rel100_1mode(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1rel100_1mode(
         JNIEnv *env, jobject obj, jlong acc, jint jMode)
 {
     (void)env;
@@ -1137,7 +1170,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1rel100_1mode(
     return account_set_rel100_mode((struct account *)acc, mode);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1dtmfmode(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1dtmfmode(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -1145,7 +1178,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1dtmfmode(
     return account_dtmfmode((struct account *)acc);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1dtmfmode(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_account_1set_1dtmfmode(
         JNIEnv *env, jobject obj, jlong acc, jint jMode)
 {
     (void)env;
@@ -1154,7 +1187,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_account_1set_1dtmfmode(
     return account_set_dtmfmode((struct account *)acc, mode);
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1extra(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_account_1extra(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)obj;
@@ -1166,7 +1199,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_account_1extra(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_account_1debug(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_account_1debug(
         JNIEnv *env, jobject obj, jlong acc)
 {
     (void)env;
@@ -1174,7 +1207,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_account_1debug(
     account_debug_log((struct account *)acc);
 }
 
-JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1alloc(
+JNIEXPORT jlong JNICALL Java_com_tline_phone_Api_ua_1alloc(
         JNIEnv *env, jobject obj, jstring jUri)
 {
     (void)obj;
@@ -1194,7 +1227,7 @@ JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1alloc(
     return (jlong)ua;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_ua_1register(JNIEnv *env, jobject obj, jlong ua)
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_ua_1register(JNIEnv *env, jobject obj, jlong ua)
 {
     (void)env;
     (void)obj;
@@ -1205,7 +1238,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_ua_1register(JNIEnv *env, job
     return res;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1unregister(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1unregister(
         JNIEnv *env, jobject obj, jlong ua)
 {
     (void)env;
@@ -1215,7 +1248,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1unregister(
     re_thread_leave();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_ua_1isregistered(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_ua_1isregistered(
         JNIEnv *env, jobject obj, jlong ua)
 {
     (void)env;
@@ -1223,7 +1256,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_ua_1isregistered(
     return ua_isregistered((struct ua *)ua) ? true : false;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1destroy(JNIEnv *env, jobject obj, jlong ua)
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1destroy(JNIEnv *env, jobject obj, jlong ua)
 {
     (void)env;
     (void)obj;
@@ -1233,7 +1266,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1destroy(JNIEnv *env, jobj
     re_thread_leave();
 }
 
-JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1account(JNIEnv *env, jobject obj, jlong ua)
+JNIEXPORT jlong JNICALL Java_com_tline_phone_Api_ua_1account(JNIEnv *env, jobject obj, jlong ua)
 {
     (void)env;
     (void)obj;
@@ -1243,7 +1276,7 @@ JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1account(JNIEnv *env, job
     return (jlong)acc;
 }
 
-JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1update_1account(
+JNIEXPORT jlong JNICALL Java_com_tline_phone_Api_ua_1update_1account(
         JNIEnv *env, jobject obj, jlong ua)
 {
     (void)env;
@@ -1252,7 +1285,7 @@ JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1update_1account(
     return ua_update_account((struct ua *)ua);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1hangup(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1hangup(
         JNIEnv *env, jobject obj, jlong ua, jlong call, jint code, jstring reason)
 {
     (void)obj;
@@ -1268,7 +1301,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1hangup(
     (*env)->ReleaseStringUTFChars(env, reason, native_reason);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1accept(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1accept(
         JNIEnv *env, jobject obj, jlong ua, jlong msg)
 {
     (void)env;
@@ -1285,7 +1318,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1accept(
         LOGW("accepting incoming call for ua %ld failed with error %d\n", (long)ua, err);
 }
 
-JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1call_1alloc(
+JNIEXPORT jlong JNICALL Java_com_tline_phone_Api_ua_1call_1alloc(
         JNIEnv *env, jobject obj, jlong ua, jlong xCall, jint vidMode)
 {
     (void)env;
@@ -1302,7 +1335,7 @@ JNIEXPORT jlong JNICALL Java_com_tutpro_baresip_Api_ua_1call_1alloc(
     return (jlong)call;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1answer(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1answer(
         JNIEnv *env, jobject obj, jlong ua, jlong call, jint vidMode)
 {
     (void)env;
@@ -1313,7 +1346,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1answer(
     re_thread_leave();
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1add_1custom_1header(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1add_1custom_1header(
         JNIEnv *env, jobject obj, jlong ua, jstring jname, jstring jbody)
 {
     (void)obj;
@@ -1332,14 +1365,14 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1add_1custom_1header(
     (*env)->ReleaseStringUTFChars(env, jbody, body);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_ua_1debug(JNIEnv *env, jobject obj, jlong ua)
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1debug(JNIEnv *env, jobject obj, jlong ua)
 {
     (void)env;
     (void)obj;
     ua_debug_log((struct ua *)ua);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_sip_1treply(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_sip_1treply(
         JNIEnv *env, jobject obj, jlong msg, jint code, jstring reason)
 {
     (void)obj;
@@ -1353,7 +1386,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_sip_1treply(
     (*env)->ReleaseStringUTFChars(env, reason, native_reason);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_bevent_1stop(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_bevent_1stop(
         JNIEnv *env, jobject obj, jlong event)
 {
     (void)env;
@@ -1363,7 +1396,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_bevent_1stop(
     re_thread_leave();
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_calls_1mute(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_calls_1mute(
         JNIEnv *env, jobject obj, jboolean mute)
 {
     (void)env;
@@ -1383,7 +1416,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_calls_1mute(
     re_thread_leave();
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1connect(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_call_1connect(
         JNIEnv *env, jobject obj, jlong call, jstring jPeer)
 {
     (void)obj;
@@ -1400,7 +1433,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1connect(
     return err;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_call_1notify_1sipfrag(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_call_1notify_1sipfrag(
         JNIEnv *env, jobject obj, jlong call, jint code, jstring reason)
 {
     (void)obj;
@@ -1413,7 +1446,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_call_1notify_1sipfrag(
     (*env)->ReleaseStringUTFChars(env, reason, native_reason);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_call_1start_1audio(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_call_1start_1audio(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)env;
@@ -1426,7 +1459,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_call_1start_1audio(
     re_thread_leave();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1hold(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_call_1hold(
         JNIEnv *env, jobject obj, jlong call, jboolean hold)
 {
     (void)env;
@@ -1448,7 +1481,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1hold(
     return err == 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1ismuted(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_call_1ismuted(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)env;
@@ -1456,7 +1489,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1ismuted(
     return audio_ismuted(call_audio((struct call *)call));
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1supported(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_call_1supported(
         JNIEnv *env, jobject obj, jlong call, jint tags)
 {
     (void)env;
@@ -1464,7 +1497,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1supported(
     return call_supported((struct call *)call, tags);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1transfer(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_call_1transfer(
         JNIEnv *env, jobject obj, jlong call, jstring jPeer)
 {
     (void)obj;
@@ -1479,7 +1512,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1transfer(
     return err;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1send_1digit(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_call_1send_1digit(
         JNIEnv *env, jobject obj, jlong call, jchar digit)
 {
     (void)env;
@@ -1494,7 +1527,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1send_1digit(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1audio_1codecs(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_call_1audio_1codecs(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)obj;
@@ -1518,7 +1551,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1audio_1codecs(
     return (*env)->NewStringUTF(env, codec_buf);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1duration(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_call_1duration(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)env;
@@ -1526,7 +1559,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1duration(
     return (jint)call_duration((struct call *)call);
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1stats(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_call_1stats(
         JNIEnv *env, jobject obj, jlong call, jstring jStream)
 {
     (void)obj;
@@ -1537,7 +1570,9 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1stats(
     else
         s = video_strm(call_video((struct call *)call));
     const struct rtcp_stats *stats = stream_rtcp_stats(s);
-    char stats_buf[256];
+    // Without this the buffer is returned uninitialised whenever RTCP has not reported yet, which
+    // hands Kotlin whatever was on the stack.
+    char stats_buf[256] = {0};
     int len;
     if (stats) {
         const double tx_rate = 1.0 * stream_metric_get_tx_bitrate(s) / 1000.0;
@@ -1557,7 +1592,33 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1stats(
     return (*env)->NewStringUTF(env, stats_buf);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1state(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_call_1jbuf_1stats(
+        JNIEnv *env, jobject obj, jlong call)
+{
+    (void)obj;
+    // What the receiving side measured by itself. The RTCP numbers next door depend on the other end
+    // sending reports at all, and a PBX that sends none leaves them at zero while the call is falling
+    // apart. These counters come from our own jitter buffer, so they are always there: lost frames say
+    // the packet never came, late frames say it came after its turn, and flushes are what a person
+    // hears as the voice breaking up.
+    const struct stream *s = audio_strm(call_audio((struct call *)call));
+    struct jbuf_stat stat;
+    char stats_buf[256] = {0};
+    int err = s ? stream_jbuf_stats(s, &stat) : EINVAL;
+    if (!err) {
+        int len = re_snprintf(&(stats_buf[0]), 256, "%u,%u,%u,%u,%u,%u,%u,%u,%u",
+                stat.n_get, stat.n_lost, stat.n_late, stat.n_late_lost, stat.n_oos,
+                stat.n_dups, stat.n_flush, stat.c_delay, stat.c_jitter);
+        if (len == -1) stats_buf[0] = '\0';
+    }
+    else {
+        LOGE("jbuf stats unavailable: %d\n", err);
+        re_snprintf(&(stats_buf[0]), 256, "err=%d", err);
+    }
+    return (*env)->NewStringUTF(env, stats_buf);
+}
+
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_call_1state(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)env;
@@ -1565,7 +1626,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_call_1state(
     return call_state((struct call *)call);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1replaces(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_call_1replaces(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)env;
@@ -1573,7 +1634,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1replaces(
     return call_supported((struct call *)call, REPLACES) ? true : false;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1replace_1transfer(
+JNIEXPORT jboolean JNICALL Java_com_tline_phone_Api_call_1replace_1transfer(
         JNIEnv *env, jobject obj, jlong xferCall, jlong call)
 {
     (void)env;
@@ -1584,7 +1645,7 @@ JNIEXPORT jboolean JNICALL Java_com_tutpro_baresip_Api_call_1replace_1transfer(
     return res == 0 ? true : false;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1peer_1uri(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_call_1peer_1uri(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)obj;
@@ -1594,7 +1655,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1peer_1uri(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1diverter_1uri(
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_call_1diverter_1uri(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)obj;
@@ -1604,7 +1665,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_call_1diverter_1uri(
     return (*env)->NewStringUTF(env, "");
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_message_1send(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_message_1send(
         JNIEnv *env, jobject obj, jlong ua, jstring jPeer, jstring jMsg, jstring jTime)
 {
     (void)obj;
@@ -1628,7 +1689,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_message_1send(
     return err;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_call_1destroy(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_call_1destroy(
         JNIEnv *env, jobject obj, jlong call)
 {
     (void)env;
@@ -1638,7 +1699,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_call_1destroy(
     re_thread_leave();
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_cmd_1exec(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_cmd_1exec(
         JNIEnv *env, jobject obj, jstring javaCmd)
 {
     (void)obj;
@@ -1651,7 +1712,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_cmd_1exec(
     return res;
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_audio_1codecs(JNIEnv *env, jobject obj)
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_audio_1codecs(JNIEnv *env, jobject obj)
 {
     (void)obj;
     struct list *aucodecl = baresip_aucodecl();
@@ -1678,7 +1739,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_audio_1codecs(JNIEnv *env,
     return (*env)->NewStringUTF(env, codec_buf);
 }
 
-JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_video_1codecs(JNIEnv *env, jobject obj)
+JNIEXPORT jstring JNICALL Java_com_tline_phone_Api_video_1codecs(JNIEnv *env, jobject obj)
 {
     (void)obj;
     struct list *vidcodecl = baresip_vidcodecl();
@@ -1705,7 +1766,7 @@ JNIEXPORT jstring JNICALL Java_com_tutpro_baresip_Api_video_1codecs(JNIEnv *env,
     return (*env)->NewStringUTF(env, codec_buf);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_log_1level_1set(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_log_1level_1set(
         JNIEnv *env, jobject obj, jint level)
 {
     (void)env;
@@ -1715,7 +1776,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_log_1level_1set(
     log_level_set(native_level);
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_net_1use_1nameserver(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_net_1use_1nameserver(
         JNIEnv *env, jobject obj, jstring javaServers)
 {
     (void)obj;
@@ -1757,7 +1818,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_net_1use_1nameserver(
     return res;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_net_1add_1address_1ifname(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_net_1add_1address_1ifname(
         JNIEnv *env, jobject obj, jstring jAddr, jstring jIfName)
 {
     (void)obj;
@@ -1781,7 +1842,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_net_1add_1address_1ifname(
     return res;
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_net_1rm_1address(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_net_1rm_1address(
         JNIEnv *env, jobject obj, jstring jIp)
 {
     (void)obj;
@@ -1807,7 +1868,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_net_1rm_1address(
     return res;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_uag_1reset_1transp(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_uag_1reset_1transp(
         JNIEnv *env, jobject obj, jboolean reg, jboolean reinvite)
 {
     (void)env;
@@ -1818,7 +1879,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_uag_1reset_1transp(
     re_thread_leave();
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_uag_1enable_1sip_1trace(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_uag_1enable_1sip_1trace(
         JNIEnv *env, jobject obj, jboolean enable)
 {
     (void)env;
@@ -1827,7 +1888,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_uag_1enable_1sip_1trace(
     uag_enable_sip_trace(enable);
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_config_1verify_1server_1set(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_config_1verify_1server_1set(
         JNIEnv *env, jobject obj, jboolean verify)
 {
     (void)env;
@@ -1837,7 +1898,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_config_1verify_1server_1set(
     conf->sip.verify_server = verify;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_net_1debug(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_net_1debug(JNIEnv *env, jobject obj)
 {
     (void)env;
     (void)obj;
@@ -1846,7 +1907,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_net_1debug(JNIEnv *env, jobje
     re_thread_leave();
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_net_1dns_1debug(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_net_1dns_1debug(JNIEnv *env, jobject obj)
 {
     (void)env;
     (void)obj;
@@ -1855,7 +1916,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_net_1dns_1debug(JNIEnv *env, 
     re_thread_leave();
 }
 
-JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_module_1load(
+JNIEXPORT jint JNICALL Java_com_tline_phone_Api_module_1load(
         JNIEnv *env, jobject obj, jstring javaModule)
 {
     (void)obj;
@@ -1865,7 +1926,7 @@ JNIEXPORT jint JNICALL Java_com_tutpro_baresip_Api_module_1load(
     return result;
 }
 
-JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_module_1unload(
+JNIEXPORT void JNICALL Java_com_tline_phone_Api_module_1unload(
         JNIEnv *env, jobject obj, jstring javaModule)
 {
     (void)obj;
@@ -1878,7 +1939,7 @@ JNIEXPORT void JNICALL Java_com_tutpro_baresip_Api_module_1unload(
 AAudioStream *AAudio_stream = NULL;
 
 JNIEXPORT jint JNICALL
-Java_com_tutpro_baresip_Api_AAudio_1open_1stream(JNIEnv *env, jobject obj) {
+Java_com_tline_phone_Api_AAudio_1open_1stream(JNIEnv *env, jobject obj) {
     AAudioStreamBuilder *builder = NULL;
     jint sessionId = -1;
 
@@ -1908,7 +1969,7 @@ Java_com_tutpro_baresip_Api_AAudio_1open_1stream(JNIEnv *env, jobject obj) {
 }
 
 JNIEXPORT void JNICALL
-Java_com_tutpro_baresip_Api_AAudio_1close_1stream(JNIEnv *env, jobject obj)
+Java_com_tline_phone_Api_AAudio_1close_1stream(JNIEnv *env, jobject obj)
 {
     if (AAudio_stream != NULL) {
         AAudioStream_requestStop(AAudio_stream);

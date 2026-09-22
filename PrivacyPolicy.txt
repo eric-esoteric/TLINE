@@ -1,9 +1,21 @@
-baresip Privacy Policy
+TLINE Privacy Policy
+====================
 
-Last updated: Sept 25, 2022
+TLINE is a SIP client for Android. It does not use advertising, analytics, or third-party push
+notification services.
 
-baresip does not collect any personal, app usage, or any other information nor share any information with anyone. Information you submit in baresip app is stored privately and securely on your Android device and is deleted when you uninstall the app.
+SIP credentials, call and message history, contacts created inside TLINE, application settings,
+diagnostic logs, and recordings stay on the device unless the user explicitly exports or shares
+them. TLINE may read Android contacts only after the user grants permission and only to display or
+use them for calls and messages. The application does not upload the address book to the developer.
 
-You can be optionally choose in Settings that baresip uses Android contacts as references to SIP and tel URIs.  If chosen, baresip does not store or upload Android contacts anywhere nor share them with anyone.
+Calls, messages, registration data, and related network traffic are sent to the SIP provider chosen
+by the user. When TLINE is routed through TRELAY, that traffic also passes through the VPN servers
+configured by the user in TRELAY. Those services have their own privacy policies and operational
+rules.
 
-Use https://github.com/juha-h/baresip-studio/discussions page for questions regarding baresip app's privacy policy.
+Removing TLINE deletes its private application data according to Android's normal application-data
+rules. Files explicitly exported by the user are not removed automatically.
+
+This policy describes the source tree in this repository and does not override the behaviour or
+terms of an independently configured SIP provider, VPN provider, or Android device vendor.

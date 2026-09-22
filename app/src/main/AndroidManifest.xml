@@ -37,6 +37,9 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:ignore="FullScreenIntentPolicy" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Only an exact alarm may restart a foreground service from the background on Android 12+. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -211,15 +214,34 @@
             </intent-filter>
         </receiver>
 
+        <!-- TRELAY addresses this receiver by component. A custom permission would look tidier, but a
+             "normal" permission is only granted when the other app is installed after this one, so
+             TRELAY installed first would silently lose the right to speak; the signal itself is
+             harmless (re-register, update the shown route), so the component is the only gate. -->
+        <receiver
+            android:name=".TrelayReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.tline.phone.TRELAY_FAILOVER" />
+                <action android:name="com.tline.phone.TRELAY_STATE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".TlineWatchdog"
+            android:enabled="true"
+            android:exported="false" />
+
         <receiver
             android:name=".TaskReceiver"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedReceiver" >
             <intent-filter>
-                <action android:name="com.tutpro.baresip.REGISTER" />
-                <action android:name="com.tutpro.baresip.UNREGISTER" />
-                <action android:name="com.tutpro.baresip.QUIT" />
+                <action android:name="com.tline.phone.REGISTER" />
+                <action android:name="com.tline.phone.UNREGISTER" />
+                <action android:name="com.tline.phone.QUIT" />
             </intent-filter>
         </receiver>
 

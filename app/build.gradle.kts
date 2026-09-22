@@ -10,7 +10,7 @@ configure<ApplicationExtension> {
     compileSdk = 37
     ndkVersion = "29.0.14206865"
     defaultConfig {
-        applicationId = "com.tutpro.baresip"
+        applicationId = "com.tline.phone"
         minSdk = 28
         targetSdk = 36
         versionCode = 553
@@ -23,8 +23,10 @@ configure<ApplicationExtension> {
             }
         }
         ndk {
+            // TLINE ships 64-bit only: every phone that runs it is arm64, and 32-bit ARM would mean
+            // building and carrying a second set of native libraries for nothing.
             // noinspection ChromeOsAbiSupport
-            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+            abiFilters.addAll(listOf("arm64-v8a"))
         }
         vectorDrawables.useSupportLibrary = true
     }
@@ -52,7 +54,7 @@ configure<ApplicationExtension> {
             version = "3.31.6"
         }
     }
-    namespace = "com.tutpro.baresip"
+    namespace = "com.tline.phone"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21

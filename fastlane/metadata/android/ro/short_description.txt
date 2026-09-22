@@ -1,1 +1,0 @@
-Client VoIP pentru Android bazat pe biblioteca SIP baresip

@@ -1,18 +1,61 @@
-/.idea
-local.properties
-.DS_Store
-*~
+# Android Studio / IntelliJ
+.idea/
 *.iml
+*.ipr
+*.iws
+out/
+
+# Gradle / Kotlin
+.gradle/
+.kotlin/
+.android/
+.android-home/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Android build products
+local.properties
+**/.cxx/
+**/.externalNativeBuild/
+captures/
+app/release/
+*.apk
+*.aab
+*.apks
+
+# Signing material — never commit
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+signing.properties
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.properties
+google-services.json
+
+# Generated native libraries (keep distribution/.gitignore)
+/distribution/*
+!/distribution/.gitignore
+/distribution.video/*
+
+# Temporary files and local artifacts
+*.log
+*.tmp
+*.temp
+*.bak
 *.orig
 *.rej
-java_*
-.gradle
-/local.properties
-build
-/captures
-.externalNativeBuild
-/app/release
-/app/.cxx
-gradle/wrapper/gradle-wrapper.jar
-/distribution/*
-/distribution.video/*
+*.tgz
+*.tar
+*.zip
+*~
+.DS_Store
+Thumbs.db
+/outputs/

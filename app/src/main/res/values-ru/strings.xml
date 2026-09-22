@@ -33,7 +33,7 @@
     <string name="debug">Отладка</string>
     <string name="decrypt_password">Расшифровать пароль</string>
     <string name="default_account">Аккаунт по умолчанию</string>
-    <string name="default_account_help">Если отмечено, эта учетная запись будет выбрана при запуске baresip.</string>
+    <string name="default_account_help">Если отмечено, эта учетная запись будет выбрана при запуске TLINE.</string>
     <string name="default_call_volume">Громкость вызова по умолчанию</string>
     <string name="default_call_volume_help">Если установлено громкость вызова 1-10.</string>
     <string name="delete">Удалить</string>
@@ -64,16 +64,16 @@
     <string name="short_chat_question">Хотите удалить чат с \'%1$s\'?</string>
     <string name="short_message_question">Хотите удалить это сообщение?</string>
     <string name="start_automatically">Запускать автоматически</string>
-    <string name="start_automatically_help">Если отмечено, baresip запускается автоматически после загрузки устройства или после установки новой версии baresip. Запуск задерживается до разблокировки устройства.</string>
+    <string name="start_automatically_help">Если отмечено, TLINE запускается автоматически после загрузки устройства или после установки новой версии TLINE. Запуск задерживается до разблокировки устройства.</string>
     <string name="status">Статус</string>
     <string name="voicemail_messages">Сообщения голосовой почты</string>
     <string name="voicemail_uri">URI голововой почты</string>
     <string name="yes">Да</string>
     <string name="you">Вы</string>
     <string name="you_have">Вы имеете</string>
-    <string name="about_title">О baresip</string>
+    <string name="about_title">О TLINE</string>
     <string name="audio_modules_title">Аудио модули</string>
-    <string name="authentication_password_help">Пароль аутентификации до 64 символов. Если указано имя пользователя для аутентификации, но нет пароля, он будет запрошен при запуске baresip.</string>
+    <string name="authentication_password_help">Пароль аутентификации до 64 символов. Если указано имя пользователя для аутентификации, но нет пароля, он будет запрошен при запуске TLINE.</string>
     <string name="backup">Резервное копирование</string>
     <string name="media_encryption">Шифрование медиа</string>
     <string name="media_encryption_help">Выбирает протокол шифрования медиа-транспорта (если есть).
@@ -96,13 +96,18 @@
     <string name="one_new_message">одно новое сообщение</string>
     <string name="one_old_message">одно старое сообщение</string>
     <string name="quit">Выход</string>
+    <string name="turn_off_telephony">Выключить телефонию</string>
+    <string name="turn_on_telephony">Включить телефонию</string>
+    <string name="telephony_paused">Телефония выключена</string>
+    <string name="telephony_paused_detail">Звонки и SIP-регистрация остановлены до ручного включения.</string>
+    <string name="finish_call_before_pausing">Сначала завершите разговор</string>
     <string name="rate">Текущая скорость: %1$s (Кбит/с)</string>
     <string name="register">Регистрация</string>
     <string name="reset_config">Сброс к заводским настройкам</string>
     <string name="restart">Перезагрузка</string>
     <string name="restore">Восстановление</string>
     <string name="verify">Запрос на проверку</string>
-    <string name="no_calls">baresip требуется разрешение доступа к микрофону для голосовых вызовов.</string>
+    <string name="no_calls">TLINE требуется разрешение доступа к микрофону для голосовых вызовов.</string>
     <string name="accept">Принять</string>
     <string name="account">Профиль</string>
     <string name="account_allocation_failure">Не могу создать новый аккаунт.</string>
@@ -117,7 +122,7 @@
     <string name="outbound_proxies">Исходящие прокси</string>
     <string name="outgoing_call_to_dots">Вызов на …</string>
     <string name="registering_failed">Регистрация `%1$s` не удалась.</string>
-    <string name="restored">Данные приложения восстановлены. Нужна перезагрузка baresip. Перезагрузить\?</string>
+    <string name="restored">Данные приложения восстановлены. Нужна перезагрузка TLINE. Перезагрузить\?</string>
     <string name="today">Сегодня</string>
     <string name="transfer_request_query">Принять перевод этого вызова на \'%1$s\'\?</string>
     <string name="transfer_request">Запрос перевода на</string>
@@ -127,13 +132,13 @@
     <string name="media_nat_help">Выбирает протокол прохождения медиа NAT (если есть). Возможные варианты: STUN (Session Traversal Utilities for NAT, RFC 5389) и ICE (Interactive Connectivity Establishment, RFC 5245).</string>
     <string name="no_cameras">У вас нет поддерживаемых камер!</string>
     <string name="no_video_calls">Выдайте разрешение доступа к камере для совершения видеозвонков или ответа на них.</string>
-    <string name="restore_failed">Не удалось восстановить данные приложения. Проверьте, что вы указали правильный пароль и что файл резервной копии принадлежит этому приложению. В Android версии 9 также проверьте Apps → baresip → Permissions → Storage и наличие файла \'%1$s\' в папке Download.</string>
+    <string name="restore_failed">Не удалось восстановить данные приложения. Проверьте, что вы указали правильный пароль и что файл резервной копии принадлежит этому приложению. В Android версии 9 также проверьте Apps → TLINE → Permissions → Storage и наличие файла \'%1$s\' в папке Download.</string>
     <string name="restart_request">Запрос на перезапуск</string>
-    <string name="backup_failed">Не удалось создать резервную копию данных приложения в файл \'%1$s\'. Проверьте Приложения → baresip → Разрешения → Хранилище.</string>
+    <string name="backup_failed">Не удалось создать резервную копию данных приложения в файл \'%1$s\'. Проверьте Приложения → TLINE → Разрешения → Хранилище.</string>
     <string name="peer_not_verified">Этот вызов БЕЗОПАСНЫЙ, но собеседник НЕ проверен!</string>
     <string name="transfer">Передача</string>
     <string name="verify_sas">Вы хотите проверить SAS &lt;%1$s&gt;\?</string>
-    <string name="start_failed">Baresip не запустился. Это может быть из-за неверного значения настроек. Проверьте адрес прослушивания, файл сертификата TLS и файл CA TLS. Затем перезапустите baresip.</string>
+    <string name="start_failed">TLINE не запустился. Это может быть из-за неверного значения настроек. Проверьте адрес прослушивания, файл сертификата TLS и файл CA TLS. Затем перезапустите TLINE.</string>
     <string name="listen">Слушать</string>
     <string name="call_info_not_available">Нет информации</string>
     <string name="dtmf">DTMF (тональный)</string>
@@ -154,9 +159,9 @@
     <string name="audio_modules_help">Аудиокодеки, предоставленные выбранными модулями, доступны для использования в аккаунтах.</string>
     <string name="tls_ca_file_help">Если флажок установлен, то был или будет загружен файл, содержащий TLS-сертификаты таких центров сертификации, которые не включены в ОС Android. В Android версии 9 файл под названием \'ca_certs.crt\' загружается из папки Download.</string>
     <string name="tls_ca_file">Файл TLS CA</string>
-    <string name="tls_certificate_file_help">Если флажок установлен, загружен или будет загружен файл, содержащий TLS-сертификат и закрытый ключ данного экземпляра baresip. В Android версии 9 файл под названием \'cert.pem\' загружается из папки Download. В целях безопасности удалите этот файл после загрузки.</string>
+    <string name="tls_certificate_file_help">Если флажок установлен, загружен или будет загружен файл, содержащий TLS-сертификат и закрытый ключ данного экземпляра TLINE. В Android версии 9 файл под названием \'cert.pem\' загружается из папки Download. В целях безопасности удалите этот файл после загрузки.</string>
     <string name="tls_certificate_file">Файл сертификата TLS</string>
-    <string name="listen_address_help">IP-адрес и порт вида \'адрес:порт\', по которым baresip прослушивает входящие SIP-запросы. Если IP-адрес является IPv6-адресом, он должен быть написан в скобках []. IPv4-адрес 0.0.0.0 или IPv6-адрес [::] заставляет baresip прослушивать все доступные адреса. Если оставить пустым (заводское значение по умолчанию), baresip будет прослушивать произвольный порт на всех доступных адресах.</string>
+    <string name="listen_address_help">IP-адрес и порт вида \'адрес:порт\', по которым TLINE прослушивает входящие SIP-запросы. Если IP-адрес является IPv6-адресом, он должен быть написан в скобках []. IPv4-адрес 0.0.0.0 или IPv6-адрес [::] заставляет TLINE прослушивать все доступные адреса. Если оставить пустым (заводское значение по умолчанию), TLINE будет прослушивать произвольный порт на всех доступных адресах.</string>
     <string name="long_chat_question">Вы хотите добавить \'%1$s\' в контакты, заблокировать или удалить этот чат?</string>
     <string name="invalid_aor">Недействительный user@domain[:port][;transport=udp|tcp|tls] \'%1$s\'</string>
     <string name="accounts_help">SIP URI или новая учётная в форме: &lt;пользователь&gt;@&lt;домен&gt;[:&lt;порт&gt;][;transport=udp|tcp|tls]. Если порт указан, а транспортный протокол отсутствует, по умолчанию используется протокол UDP. Если же указан транспортный протокол и отсутствует порт, по умолчанию используется порт 5060 или 5061 (TLS). Если ни один из них не указан и не используется исходящий прокси-сервер, регистратор учётной записи (если есть) определяется исключительно на основе DNS-информации домена.</string>
@@ -176,7 +181,20 @@
     <string name="invalid_proxy_server_uri">Недействительный URI прокси-сервера \'%1$s\'</string>
     <string name="sip_uri_of_another_proxy_server">SIP URI другого прокси-сервера</string>
     <string name="sip_uri_of_proxy_server">SIP URI прокси-сервера</string>
-    <string name="about_text"><![CDATA["\n        <h1>Пользовательский агент для SIP и мобильной связи на основе библиотеки\n            <a href=\"https://github.com/baresip/baresip\">baresip</a></h1>\n        <br>\n        <p>Juha Heinanen &lt;jh@tutpro.com&gt;</p>\n        <p>Версия %1$s</p>\n        <br>\n        <h2>Подсказки по использованию</h2>\n        <ul>\n            <li>Проверьте, что значения по умолчанию в Настройках baresip соответствуют вашим потребностям\n                (коснитесь заголовков пунктов для получения справки).</li>\n            <li>Если вы хотите использовать baresip для мобильных вызовов, включите параметр «Приложение телефона по умолчанию». Это\n                 создаст учётную запись Mobile для мобильных вызовов.</li>\n            <li>Затем в разделе Учётные записи создайте одну или несколько учётных записей SIP (снова касайтесь заголовков пунктов для помощи).</li>\n            <li>Состояние регистрации учётной записи отображается цветной точкой: зелёная (регистрация\n                успешна), жёлтая (регистрация выполняется), красная (регистрация не удалась),\n                белая (регистрация не активирована).</li>\n            <li>Касание точки состояния открывает конфигурацию учётной записи.</li>\n            <li>Долгое нажатие на значки панели baresip показывает информацию о значках.</li>\n            <li>Жест смахивания вниз вызывает повторную регистрацию текущей отображаемой учётной записи.</li>\n            <li>Долгое нажатие на текущей отображаемой учётной записи включает или отключает её регистрацию.</li>\n            <li>Смахивание влево/вправо переключает между учётными записями.</li>\n            <li>Предыдущий собеседник может быть выбран повторно касанием значка вызова, когда поле «Вызываемый» пусто.</li>\n            <li>Собеседников вызовов и сообщений можно добавлять в контакты долгими нажатиями.</li>\n            <li>Долгие нажатия также можно использовать для удаления вызовов, чатов, сообщений и контактов.</li>\n            <li>Касание/долгое нажатие на значке контакта можно использовать для установки/удаления аватара.</li>\n            <li>Долгое нажатие на аудиокодеке можно использовать для включения/отключения кодека.</li>\n            <li>Смотрите <a href=\"https://github.com/juha-h/baresip-studio/wiki\">Вики</a> для получения дополнительной информации.</li>\n        </ul>\n        <h2>Политика конфиденциальности</h2>\n            <p>Политика конфиденциальности доступна <a href=\"https://raw.githubusercontent.com/juha-h/baresip-studio/master/PrivacyPolicy.txt\">здесь</a>.</p>\n        <br>\n        <h2>Исходный код</h2>\n            <p>Исходный код доступен на <a href=\"https://github.com/juha-h/baresip-studio\">GitHub</a>,\n            там же можно сообщить о проблемах.</p>\n        <br>\n        <h2>Переводы языков</h2>\n            <p>Переводы языков управляются через проект baresip\n                <a href=\"https://hosted.weblate.org/projects/baresip/\">Weblate</a>.</p>\n        <br>\n        <h2>Лицензии</h2>\n        <ul>\n            <li><b>BSD-3-Clause</b> за исключением следующего:</li>\n            <li><b>Apache 2.0</b> кодеки AMR и безопасность TLS</li>\n            <li><b>AGPLv4</b> медиа-шифрование ZRTP</li>\n            <li><b>GNU LGPL 2.1</b> кодек Codec2</li>\n            <li><b>Free</b> кодек G.722</li>\n            <li><b>GNU GPLv3</b> кодек G.729</li>\n        </ul>\n        "]]></string>
+    <string name="about_text"><![CDATA[
+        <h1>TLINE — SIP-телефония поверх TRELAY</h1>
+        <br>
+        <p>Версия %1$s</p>
+        <p>Клиент построен на библиотеке <a href="https://github.com/baresip/baresip">TLINE</a>.
+        TRELAY управляет VPN-маршрутом, а TLINE отвечает за SIP-регистрацию, звонки и уведомления.</p>
+        <p>Исходный код: <a href="https://github.com/eric-esoteric/TLINE">GitHub</a>.</p>
+        <h2>Как начать</h2>
+        <ul>
+            <li>Добавьте SIP-адрес, логин и пароль в разделе аккаунтов.</li>
+            <li>Свайп вниз запускает немедленную перерегистрацию.</li>
+            <li>Добавьте TLINE в телефонный маршрут TRELAY, чтобы SIP и голос шли через туннель.</li>
+        </ul>
+        ]]></string>
     <string name="outbound_proxies_help">SIP URI одного или двух прокси, которые необходимо использовать при отправке запросов. Если задано два, запросы РЕГИСТРАЦИИ отправляются обоим, а другие запросы отправляются тому, кто отвечает. Если исходящий прокси-сервер не указан, запросы отправляются на основе поиска записи DNS NAPTR/SRV/A для URI хоста вызываемого объекта. Если hostpart SIP URI является адресом IPv6, адрес должен быть записан в скобках []. \nПримеры: \n • sip:fooexample.com:50601;transport=tls \n • sip:[2001:67c:223:777::10]:5060;transport=tcp \n • sip:192.168.43.50:443;transport=wss</string>
     <string name="invalid_authentication_username">Неверное имя пользователя для аутентификации \'%1$s\'</string>
     <string name="authentication_username_help">Имя пользователя для аутентификации, если требуется аутентификация SIP-запросов. Значение по умолчанию - имя пользователя учетной записи.</string>
@@ -186,8 +204,15 @@
     <string name="transfer_destination">Переадресовать на</string>
     <string name="call_transfer">Переадресация вызова</string>
     <string name="transfer_request_to">Переадресовать вызов</string>
-    <string name="about_text_plus"><![CDATA["\"\n        <h1>SIP-клиент на основе библиотеки Baresip с видеозвонками</h1>\n        <br>\n        <p>Juha Heinanen &lt;jh@tutpro.com&gt;</p>\n        <p>Version %1$s</p>\n        <br>\n        <h2>Подсказки по использованию</h2>\n        <ul>\n            <li>Проверьте, что значения умолчальных параметров соответствуют вашим потребностям (касайтесь их названий для получения справки).</li>\n            <li>Затем создайте одну или несколько учётных записей (касайтесь заголовков элементов для получения справки).</li>\n            <li>Состояние регистрации учётной записи отображается цветной точкой: зелёная (регистрация успешна), жёлтая (регистрация выполняется), красная (регистрация не удалась), белая (регистрация отключена).</li>\n            <li>Касание точки открывает параметры учётной записи.</li>\n            <li>Долгое нажатие на текущей учётной записи включает или отключает её регистрацию.</li>\n            <li>Жест смахивания вниз вызывает повторную регистрацию текущей учётной записи.</li>\n            <li>Долгое нажатие на текущей учётной записи включает или отключает её регистрацию.</li>\n            <li>Смахивание влево или вправо переключает между учётными записями.</li>\n            <li>редыдущего собеседника можно выбрать касанием значка вызова при пустом поле «Вызываемый».</li>\n            <li>Собеседников в вызовах и сообщениях можно добавлять в контакты долгими нажатиями.</li>\n            <li>Также долгие нажатия можно использовать для удаления вызовов, чатов, сообщений и контактов.</li>\n            <li>Касание / долгое нажатие значка контакта можно использовать для установки/удаления изображения аватара.</li>\n            <li>См. <a href=\"https://github.com/juha-h/baresip-studio/wiki\">Wiki</a> для подробностей.</li>\n        </ul>\n        <h2>Известные проблемы</h2>\n        <ul>\n            <li>При видеозвонках устройство необходимо удерживать в альбомной ориентации.\nрежим повернут на 90 градусов влево от книжной ориентации.</li>\n            <li>Selfview не отображается должным образом, когда видеопоток используется только для отправки.</li>\n        </ul>\n        <h2>Политика конфиденциальности</h2>\n        <p>Политика конфиденциальности доступна <a href=\"https://raw.githubusercontent.com/juha-h/baresip-studio/video/PrivacyPolicy.txt\">здесь</a>.</p>\n        <br>\n        <h2>Исходный код</h2>\n        <p>Исходный код доступен на <a href=\"https://github.com/juha-h/baresip-studio\">GitHub</a>,\n        там же можно сообщать об ошибках.</p>\n        <br>\n        <h2>Лицензии</h2>\n        <ul>\n            <li><b>BSD-3-Clause</b> except the following:</li>\n            <li><b>Apache 2.0</b> AMR codecs and TLS security</li>\n            <li><b>AGPLv4</b> ZRTP media encryption</li>\n            <li><b>GNU LGPL 2.1</b> G.722, G.726, and Codec2 codecs</li>\n            <li><b>GNU GPLv3</b> G.729 codec</li>\n            <li><b>GNU GPLv2</b> H.264 and H.265 codecs</li>\n            <li><b>AOMedia</b> AV1 codec</li>\n        </ul>\n        \""]]></string>
-    <string name="about_title_plus">О baresip+</string>
+    <string name="about_text_plus"><![CDATA[
+        <h1>TLINE — SIP-телефония поверх TRELAY</h1>
+        <br>
+        <p>Версия %1$s</p>
+        <p>Клиент построен на библиотеке <a href="https://github.com/baresip/baresip">TLINE</a>.
+        TRELAY управляет VPN-маршрутом, а TLINE отвечает за SIP-регистрацию, звонки и уведомления.</p>
+        <p>Исходный код: <a href="https://github.com/eric-esoteric/TLINE">GitHub</a>.</p>
+        ]]></string>
+    <string name="about_title_plus">О TLINE</string>
     <string name="dark_theme">Темная тема</string>
     <string name="verify_server">Проверка сертификатов сервера</string>
     <string name="peer">Пир</string>
@@ -205,20 +230,20 @@
     <string name="missed_call_from">Пропущенный вызов от</string>
     <string name="call_details">Детали вызовов</string>
     <string name="time">Время</string>
-    <string name="verify_server_help">Если флажок установлен, baresip проверяет TLS-сертификаты SIP User Agent и SIP Proxy Servers, когда используется транспорт TLS.</string>
+    <string name="verify_server_help">Если флажок установлен, TLINE проверяет TLS-сертификаты SIP User Agent и SIP Proxy Servers, когда используется транспорт TLS.</string>
     <string name="dark_theme_help">Принудительное отображение темной темы</string>
     <string name="reset_config_alert">Вы уверены, что хотите сбросить настройки до значений по умолчанию\?</string>
-    <string name="sip_trace_help">Если флажок установлен и если установлен флажок Отладка, сообщения Logcat также включают трассировку запросов и ответов SIP. Автоматически снимается при запуске baresip.</string>
-    <string name="battery_optimizations_help">Отключите оптимизацию батареи, если хотите снизить вероятность того, что Android ограничит доступ baresip к сети или переведёт baresip в режим ожидания.</string>
+    <string name="sip_trace_help">Если флажок установлен и если установлен флажок Отладка, сообщения Logcat также включают трассировку запросов и ответов SIP. Автоматически снимается при запуске TLINE.</string>
+    <string name="battery_optimizations_help">Отключите оптимизацию батареи, если хотите снизить вероятность того, что Android ограничит доступ TLINE к сети или переведёт TLINE в режим ожидания.</string>
     <string name="audio_settings">Аудионастройки</string>
-    <string name="account_nickname_help">Псевдоним (если есть), используемый для идентификации этой учетной записи в baresip app.</string>
+    <string name="account_nickname_help">Псевдоним (если есть), используемый для идентификации этой учетной записи в TLINE app.</string>
     <string name="invalid_account_nickname">Неверный никнейм учетной записи \'%1$s\'</string>
     <string name="non_unique_account_nickname">Никнейм \'%1$s\' уже существует</string>
     <string name="country_code">Код страны</string>
     <string name="nickname">Никнейм</string>
     <string name="reg_int">Интервал регистрации</string>
     <string name="invalid_reg_int">Неверный интервал регистрации \'%1$s\'</string>
-    <string name="reg_int_help">Указывает baresip как часто (в секундах) отправлять REGISTER-запросы. Допустимы значения от 60 до 3600.</string>
+    <string name="reg_int_help">Указывает TLINE как часто (в секундах) отправлять REGISTER-запросы. Допустимы значения от 60 до 3600.</string>
     <string name="invalid_sip_uri_hostpart">Неверная хостовая часть SIP URI \'%1$s\'</string>
     <string name="allow_video_recv">Разрешить приём видео с сайта \'%1$s\'\?</string>
     <string name="allow_video_send">Разрешить передачу видео на \'%1$s\'\?</string>
@@ -238,8 +263,8 @@
     <string name="average_rate">Средняя скорость: %1$s (кбит/с)</string>
     <string name="anonymous">Анонимно</string>
     <string name="unknown">Неизвестно</string>
-    <string name="audio_permissions">baresip необходимо разрешение \"Микрофон\" для голосовых вызовов, разрешение \"Близлежащие устройства\" для обнаружения микрофона/динамика Bluetooth, разрешение \"Уведомления\" для отправки уведомлений, а в Android 9 - разрешение \"Хранилище\" для операций резервного копирования/восстановления.</string>
-    <string name="contacts_consent">Если выбраны контакты Android, они могут быть использованы в звонках и сообщениях как ссылки для SIP и tel URI. Приложение baresip не хранит контакты Android и никому их не передаёт. Чтобы контакты Android стали доступны в baresip, Google требует вашего согласия на их использование в соответствии с этим описанием и <a href="https://raw.githubusercontent.com/juha-h/baresip-studio/master/PrivacyPolicy.txt">политикой конфиденциальности</a> . </string>
+    <string name="audio_permissions">TLINE необходимо разрешение \"Микрофон\" для голосовых вызовов, разрешение \"Близлежащие устройства\" для обнаружения микрофона/динамика Bluetooth, разрешение \"Уведомления\" для отправки уведомлений, а в Android 9 - разрешение \"Хранилище\" для операций резервного копирования/восстановления.</string>
+    <string name="contacts_consent">Контакты Android используются только для отображения и выбора адресата звонка или сообщения. TLINE не отправляет адресную книгу разработчику.</string>
     <string name="country_code_help">Код страны в формате E.164 для данной учётной записи. Если пользовательская часть URI собеседника в вызове или сообщении содержит телефонный номер, не начинающийся со знака \'+\', и контакт не найден, номер дополняется префиксом этого кода страны и поиск контакта повторяется. Если номер начинается с единственной цифры \'0\', она удаляется перед добавлением префикса.</string>
     <string name="address_family">Семейство адресов</string>
     <string name="avatar_image">Изображение профиля</string>
@@ -251,9 +276,9 @@
     <string name="user_domain_or_number">пользователь@домен или номер телефона</string>
     <string name="rtcp_mux_help">При отметке RTP- и RTCP-пакеты мультиплексируются на единственном порту (RFC 5761).</string>
     <string name="telephony_provider_help">Хостовая часть SIP URI используется при звонках на телефонные номера. По умолчанию это домен учётной записи. Если не указана, эта учётная запись не сможет использоваться для телефонных вызовов.</string>
-    <string name="contacts_help">Выбирает, будут ли использоваться контакты baresip, контакты Android или оба контакта. Если используется и то, и другое, и контакт с одинаковым именем существует в обоих контактах, будет выбран контакт baresip.</string>
-    <string name="address_family_help">Определяет, какие IP-адреса использует baresip. Если выбрано IPv4 или IPv6, baresip использует либо IPv4, либо IPv6 адреса. Если ничего не выбрано, baresip использует оба типа.</string>
-    <string name="audio_and_video_permissions">baresip+ необходимо разрешение \"Микрофон\" для голосовых вызовов, разрешение \"Камера\" для видеозвонков, разрешение \"Близлежащие устройства\" для обнаружения микрофона/динамика Bluetooth, разрешение \"Уведомления\" для отправки уведомлений, а в Android 9 - разрешение \"Хранилище\" для операций резервного копирования/восстановления.</string>
+    <string name="contacts_help">Выбирает, будут ли использоваться контакты TLINE, контакты Android или оба контакта. Если используется и то, и другое, и контакт с одинаковым именем существует в обоих контактах, будет выбран контакт TLINE.</string>
+    <string name="address_family_help">Определяет, какие IP-адреса использует TLINE. Если выбрано IPv4 или IPv6, TLINE использует либо IPv4, либо IPv6 адреса. Если ничего не выбрано, TLINE использует оба типа.</string>
+    <string name="audio_and_video_permissions">TLINE необходимо разрешение \"Микрофон\" для голосовых вызовов, разрешение \"Камера\" для видеозвонков, разрешение \"Близлежащие устройства\" для обнаружения микрофона/динамика Bluetooth, разрешение \"Уведомления\" для отправки уведомлений, а в Android 9 - разрешение \"Хранилище\" для операций резервного копирования/восстановления.</string>
     <string name="telephony_provider">Поставщик услуг телефонии</string>
     <string name="android_contact_help">При отметке этот контакт будет добавлен в контакты Android.</string>
     <string name="blind">Вслепую</string>
@@ -275,7 +300,7 @@
     <string name="redirect_request">Запрос переадресации</string>
     <string name="tone_country">Страна тонов</string>
     <string name="rel_100_help">При отметке показывается поддержка надёжных предварительных ответов (RFC 3262).</string>
-    <string name="default_phone_app_help">Если отмечено, baresip является приложением телефона по умолчанию.</string>
+    <string name="default_phone_app_help">Если отмечено, TLINE является приложением телефона по умолчанию.</string>
     <string name="tone_country_help">Страна для определения тонов вызова, ожидания и занятости</string>
     <string name="rel_100">Надёжные предварительные ответы</string>
     <string name="appear_on_top_permission">Для автоматического запуска требуется разрешение отображения поверх других приложений.</string>
@@ -356,7 +381,7 @@
     <string name="blocked_contact_question">Добавить собеседника \'%1$s\' в контакты?</string>
     <string name="show_call">Показать вызов</string>
     <string name="default_messaging_app">Приложение для сообщений по умолчанию</string>
-    <string name="default_messaging_app_help">Если отмечено, baresip является приложением для SMS/MMS по умолчанию.</string>
+    <string name="default_messaging_app_help">Если отмечено, TLINE является приложением для SMS/MMS по умолчанию.</string>
     <string name="messaging_role_not_available">Роль приложения для сообщений по умолчанию недоступна</string>
     <string name="enable_default_messaging">Включите приложение для сообщений по умолчанию в Настройках</string>
     <string name="unique_contact_uri">Уникальный Contact URI</string>
@@ -388,4 +413,16 @@
     <string name="ussd_failed">USSD-запрос не выполнен</string>
     <string name="ussd_service_unavailable">Служба USSD недоступна</string>
     <string name="ussd_unknown_error">Неизвестная ошибка USSD</string>
+    <string name="add_to_call">В конференцию</string>
+    <string name="decline_call">Отклонить</string>
+    <string name="full_screen_calls">Входящий звонок поверх экрана</string>
+    <string name="full_screen_calls_help">Разреши TLINE показывать входящий вызов поверх экрана блокировки. На разблокированном телефоне Android может показывать всплывающее уведомление.</string>
+    <string name="full_screen_calls_enable">Разрешить в настройках Android</string>
+    <string name="full_screen_calls_enabled">Разрешено</string>
+    <string name="quick_sip_setup">Быстрая настройка SIP</string>
+    <string name="quick_sip_setup_hint">Введите SIP-адрес, логин и пароль от АТС. Регистрация включена по умолчанию.</string>
+    <string name="add_and_connect">Добавить и подключить</string>
+    <string name="registration_requested">Перерегистрация запущена</string>
+    <string name="registration_is_disabled">Регистрация этого профиля выключена</string>
+    <string name="connection_settings">Подключение</string>
 </resources>

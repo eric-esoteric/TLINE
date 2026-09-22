@@ -1,1 +1,0 @@
-VoIP User Agent-app för Android baserad på baresip SIP-bibliotek

@@ -1,119 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name" translatable="false">baresip</string>
-    <string name="app_name_plus" translatable="false">baresip+</string>
+    <string name="app_name" translatable="false">TLINE</string>
+    <string name="app_name_plus" translatable="false">TLINE</string>
     <!-- About Activity -->
-    <string name="about_title">About baresip</string>
-    <string name="about_title_plus">About baresip+</string>
+    <string name="about_title">О TLINE</string>
+    <string name="about_title_plus">О TLINE</string>
     <string name="about_text">
         <![CDATA[
-        <h1>SIP and mobile calling User Agent based on
-            <a href="https://github.com/baresip/baresip">baresip</a> library</h1>
+        <h1>TLINE — SIP-телефония поверх TRELAY</h1>
         <br>
-        <p>Juha Heinanen &lt;jh@tutpro.com&gt;</p>
-        <p>Version %1$s</p>
+        <p>Версия %1$s</p>
+        <p>Сделано на базе <a href="https://github.com/juha-h/baresip-studio">baresip-studio</a>
+            и библиотеки
+            <a href="https://github.com/baresip/baresip">baresip</a>.</p>
         <br>
-        <h2>Usage Hints</h2>
+        <h2>Связка с TRELAY</h2>
         <ul>
-            <li>Check that default values in baresip\'s Settings meet your needs
-                (touch item titles for help).</li>
-            <li>If your device has SIM and you want use baresip for mobile calling, turn on Default Phone App setting.
-                It will create Mobile account for mobile calling.</li>
-            <li>Then in Accounts, create one or more SIP accounts (again touch item titles for help).</li>
-            <li>Registration status of an account is shown with a colored dot: green (registration
-                succeeded), yellow (registration is in progress), red (registration failed),
-                white (registration has not been activated).</li>
-            <li>Touch on the status dot leads directly to account configuration.</li>
-            <li>Long touch on baresip bar icons shows information about the icons.</li>
-            <li>Swipe down gesture causes re-registration of the currently shown account.</li>
-            <li>Long touch on currently shown account enables or disables account\'s registration.</li>
-            <li>Swipe left/right gesture toggles between the accounts.</li>
-            <li>Previous call party can be reselect by touching the call icon when Callee is empty.</li>
-            <li>Peers of calls and messages can be added to contacts by long touches.</li>
-            <li>Long touches can also be used to remove calls, chats, messages, and contacts.</li>
-            <li>Touch/long touch on contact icon can be used to install/remove image avatar.</li>
-            <li>Long touch on an audio codec can be used to enable/disable the codec.</li>
-            <li>See <a href="https://github.com/juha-h/baresip-studio/wiki">Wiki</a> for more information.</li>
+            <li>Когда TRELAY переключает маршрут телефонии на резервный сервер, он сообщает об этом
+                TLINE, и TLINE сразу перерегистрируется с нового адреса — входящие продолжают доходить.</li>
+            <li>Строка под заголовком показывает, какой маршрут и какой сервер сейчас несут звонки.
+                Если TRELAY молчит, строка об этом предупреждает.</li>
+            <li>Сторож раз в 5 минут поднимает TLINE, если Android выгрузил его, а при потерянной
+                регистрации звучит тот же сигнал, что и в TRELAY.</li>
         </ul>
-        <h2>Privacy Policy</h2>
-            <p>Privacy policy is available <a href="https://raw.githubusercontent.com/juha-h/baresip-studio/master/PrivacyPolicy.txt">here</a>.</p>
-        <br>
-        <h2>Source Code</h2>
-            <p>Source code is available at <a href="https://github.com/juha-h/baresip-studio">GitHub</a>,
-            where also issues can be reported.</p>
-        <br>
-        <h2>Language Translations</h2>
-            <p>Language translations are managed via baresip
-                <a href="https://hosted.weblate.org/projects/baresip/">Weblate</a> project.</p>
-        <br>
-        <h2>Licenses</h2>
+        <h2>Как начать</h2>
         <ul>
-            <li><b>BSD-3-Clause</b> except the following:</li>
-            <li><b>Apache 2.0</b> AMR codecs and TLS security</li>
-            <li><b>AGPLv4</b> ZRTP media encryption</li>
-            <li><b>GNU LGPL 2.1</b> Codec2 codec</li>
-            <li><b>Free</b> G.722 codec</li>
-            <li><b>GNU GPLv3</b> G.729 codec</li>
+            <li>В «Аккаунтах» создайте SIP-аккаунт (подсказки — по нажатию на заголовки полей).</li>
+            <li>Цвет точки показывает регистрацию: зелёная — есть, жёлтая — идёт, красная — не вышло,
+                белая — регистрация выключена.</li>
+            <li>Свайп вниз перерегистрирует текущий аккаунт, долгое нажатие — включает и выключает
+                регистрацию, свайп влево-вправо переключает аккаунты.</li>
+            <li>В TRELAY добавьте TLINE в маршрут с отметкой «Телефония», чтобы весь SIP и голос шли
+                через туннель.</li>
+        </ul>
+        <h2>Исходный код</h2>
+            <p>Исходный код TLINE —
+            <a href="https://github.com/eric-esoteric/TLINE">GitHub</a>.</p>
+        <br>
+        <h2>Лицензии</h2>
+        <ul>
+            <li><b>BSD-3-Clause</b>, кроме перечисленного ниже:</li>
+            <li><b>Apache 2.0</b> — кодеки AMR и TLS</li>
+            <li><b>AGPLv4</b> — шифрование ZRTP</li>
+            <li><b>GNU LGPL 2.1</b> — кодек Codec2</li>
+            <li><b>Free</b> — кодек G.722</li>
+            <li><b>GNU GPLv3</b> — кодек G.729</li>
         </ul>
         ]]>
     </string>
     <string name="about_text_plus">
         <![CDATA[
-        <h1>SIP User Agent with video calls based on <a href="https://github.com/baresip/baresip">baresip</a> library</h1>
+        <h1>TLINE — SIP-телефония поверх TRELAY</h1>
         <br>
-        <p>Juha Heinanen &lt;jh@tutpro.com&gt;</p>
-        <p>Version %1$s</p>
-        <br>
-        <h2>Usage Hints</h2>
-        <ul>
-            <li>Check that default values in baresip+\'s Settings meet your needs
-                (touch item titles for help).</li>
-            <li>If your device has SIM and you want use baresip for mobile calling, turn on Default Phone App setting.
-                It will create Mobile account for mobile calling.</li>
-            <li>Then in Accounts, create one or more SIP accounts (again touch item titles for help).</li>
-            <li>Registration status of an account is shown with a colored dot: green (registration
-                succeeded), yellow (registration is in progress), red (registration failed), white (registration
-                has not been activated).</li>
-            <li>Touch on the status dot leads directly to account configuration.</li>
-            <li>Long touch on baresip bar icons shows information about the icons.</li>
-            <li>Swipe down gesture causes re-registration of the currently shown account.</li>
-            <li>Long touch on currently shown account enables or disables account\'s registration.</li>
-            <li>Swipe left/right gesture toggles between the accounts.</li>
-            <li>Previous call party can be reselect by touching the call icon when Callee is empty.</li>
-            <li>Peers of calls and messages can be added to contacts by long touches.</li>
-            <li>Long touches can also be used to remove calls, chats, messages, and contacts.</li>
-            <li>Touch/long touch of contact icon can be used to install/remove image avatar.</li>
-            <li>Long touch on an audio or video codec can be used to enable/disable the codec.</li>
-            <li>See <a href="https://github.com/juha-h/baresip-studio/wiki">Wiki</a> for more
-                information.</li>
-        </ul>
-        <h2>Known Issues</h2>
-        <ul>
-            <li>Selfview is not properly shown when video stream is sendonly.</li>
-        </ul>
-        <h2>Privacy Policy</h2>
-        <p>Privacy policy is available
-            <a href="https://raw.githubusercontent.com/juha-h/baresip-studio/video/PrivacyPolicy.txt">here</a>.</p>
-        <br>
-        <h2>Source code</h2>
-        <p>Source code is available at <a href="https://github.com/juha-h/baresip-studio">GitHub</a>,
-            where also issues can be reported.</p>
-        <br>
-        <h2>Language translations</h2>
-        <p>Language translations are managed via baresip
-            <a href="https://hosted.weblate.org/projects/baresip/">Weblate</a> project.</p>
-        <br>
-        <h2>Licenses</h2>
-        <ul>
-            <li><b>BSD-3-Clause</b> except the following:</li>
-            <li><b>Apache 2.0</b> AMR codecs and TLS security</li>
-            <li><b>AGPLv4</b> ZRTP media encryption</li>
-            <li><b>GNU LGPL 2.1</b> Codec2 codec</li>
-            <li><b>Free</b> G.722 codec</li>
-            <li><b>GNU GPLv3</b> G.729 codec</li>
-            <li><b>GNU GPLv2</b> H.264 and H.265 codecs</li>
-            <li><b>AOMedia</b> AV1 codec</li>
-        </ul>
+        <p>Версия %1$s</p>
+        <p>Клиент построен на библиотеке <a href="https://github.com/baresip/baresip">baresip</a>.
+            TRELAY управляет VPN-маршрутом, а TLINE отвечает за SIP-регистрацию, звонки и уведомления.</p>
+        <p>Исходный код: <a href="https://github.com/eric-esoteric/TLINE">GitHub</a>.</p>
         ]]>
     </string>
     <!-- Account Activity -->
@@ -461,15 +403,15 @@
     <string name="user_agent">User Agent</string>
     <string name="user_agent_help">Custom SIP request/response User-Agent header field value</string>
     <string name="invalid_user_agent">Invalid User-Agent header field value</string>
-    <string name="contacts_help">Chooses if baresip contacts, Android contacts, or both are used.
+    <string name="contacts_help">Chooses if TLINE contacts, Android contacts, or both are used.
         If both are used and a contact with the same name exists in both contacts,
-        the baresip contact will be chosen.</string>
+        the TLINE contact will be chosen.</string>
     <string name="both">Both</string>
     <string name="debug">Debug</string>
     <string name="debug_help">If checked, provides debug and info level log messages to Logcat.</string>
     <string name="sip_trace">SIP Trace</string>
     <string name="sip_trace_help">If checked and if Debug is checked, Logcat messages include also SIP
-        request and response trace. Unchecked automatically at baresip start.</string>
+        request and response trace. Unchecked automatically at TLINE start.</string>
     <string name="reset_config">Reset to Factory Defaults</string>
     <string name="reset_config_help">If checked, settings are reset to factory default values.</string>
     <string name="reset_config_alert">Are you sure you want to reset settings to factory
@@ -477,15 +419,14 @@
     <string name="reset">Reset</string>
     <string name="read_cert_error">Failed to read file \'cert.pem\'.</string>
     <string name="read_ca_certs_error">Failed to read file \'ca_certs.crt\'.</string>
-    <string name="config_restart">You need to restart baresip in order to activate the new
+    <string name="config_restart">You need to restart TLINE in order to activate the new
         settings. Restart now?
     </string>
     <string name="consent_request">Consent Request</string>
     <string name="contacts_consent">If Android contacts is chosen, they can be used
-        in calling and messaging as references to SIP and tel URIs. baresip app does not store Android
-        contacts nor share them with anyone.  In order to make Android contacts available in baresip,
-        Google requires that you accept their use as described here and in app\'s
-        <a href="https://raw.githubusercontent.com/juha-h/baresip-studio/master/PrivacyPolicy.txt">Privacy Policy</a>.
+        in calling and messaging as references to SIP and tel URIs. TLINE does not store Android
+        contacts nor share them with anyone. In order to make Android contacts available in TLINE,
+        Android requires that you accept their use as described in the app\'s Privacy Policy.
     </string>
     <!-- Contact Activity -->
     <string name="new_contact">New Contact</string>
@@ -551,7 +492,7 @@
     <string name="bullet_item" translatable="false">\u2022 %1$s</string>
     <string name="invalid_sip_or_tel_uri">Invalid SIP or tel URI \'%1$s\'</string>
     <string name="permission_denied">Permission Denied</string>
-    <string name="baresip" translatable="false">baresip</string>
+    <string name="baresip" translatable="false">TLINE</string>
     <string name="android" translatable="false">Android</string>
     <!-- Main Activity -->
     <string name="backup">Backup</string>
@@ -560,6 +501,11 @@
     <string name="about">About</string>
     <string name="restart">Restart</string>
     <string name="quit">Quit</string>
+    <string name="turn_off_telephony">Turn off telephony</string>
+    <string name="turn_on_telephony">Turn on telephony</string>
+    <string name="telephony_paused">Telephony is off</string>
+    <string name="telephony_paused_detail">Calls and SIP registration are paused until you turn them back on.</string>
+    <string name="finish_call_before_pausing">Finish the current call first</string>
     <string name="outgoing_call_to_dots">Call to …</string>
     <string name="incoming_call_from_dots">Call from …</string>
     <string name="diverted_by_dots">Diverted by …</string>
@@ -645,7 +591,7 @@
         permission.</string>
     <string name="airplane_mode">Airplane mode is ON. Turn it OFF to use mobile account.</string>
     <string name="mobile_service_not_available">Mobile service is not available.</string>
-    <string name="no_calls">baresip needs \"Microphone\" permission for voice calls.</string>
+    <string name="no_calls">TLINE needs \"Microphone\" permission for voice calls.</string>
     <string name="no_video_calls">Grant \"Camera\" permission to make or answer video calls.</string>
     <string name="no_backup">You are not able create backup without \"Storage\" permission.</string>
     <string name="no_restore">You are not able restore backup without \"Storage\" permission.</string>
@@ -659,11 +605,11 @@
     <string name="ussd_service_unavailable">USSD service unavailable</string>
     <string name="ussd_unknown_error">USSD unknown error</string>
     <string name="permissions_rationale">Permissions rationale</string>
-    <string name="audio_permissions">baresip needs \"Microphone\" permission for voice calls,
+    <string name="audio_permissions">TLINE needs \"Microphone\" permission for voice calls,
         \"Nearby devices\" permission for Bluetooth microphone/speaker detection,
         \"Notifications\" permission for posting notifications, and in Android 9
         \"Storage\" permission for Backup/Restore operations.</string>
-    <string name="audio_and_video_permissions">baresip+ needs \"Microphone\" permission
+    <string name="audio_and_video_permissions">TLINE needs \"Microphone\" permission
         for voice calls, \"Camera\" permission for video calls, \"Nearby devices\" permission
         for Bluetooth microphone/speaker detection, \"Notifications\" permission for posting
         notifications, and in Android 9 \"Storage\" permissions for Backup/Restore operations.</string>
@@ -674,4 +620,16 @@
     <string name="microphone_tip">If activated during call, microphone is muted.</string>
     <string name="speakerphone_title">Speakerphone</string>
     <string name="speakerphone_tip">If activated, audio is played via device speakerphone.</string>
+    <string name="add_to_call">Add to call</string>
+    <string name="decline_call">Decline</string>
+    <string name="full_screen_calls">Full-screen incoming calls</string>
+    <string name="full_screen_calls_help">Allow TLINE to show an incoming call over the lock screen. On an unlocked phone, Android may show a heads-up call notification instead.</string>
+    <string name="full_screen_calls_enable">Allow in Android settings</string>
+    <string name="full_screen_calls_enabled">Allowed</string>
+    <string name="quick_sip_setup">Quick SIP setup</string>
+    <string name="quick_sip_setup_hint">Enter the SIP address, login and password from your provider. Registration is enabled by default.</string>
+    <string name="add_and_connect">Add and connect</string>
+    <string name="registration_requested">Registration requested</string>
+    <string name="registration_is_disabled">Registration is disabled for this profile</string>
+    <string name="connection_settings">Connection</string>
 </resources>

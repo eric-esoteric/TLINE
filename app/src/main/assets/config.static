@@ -14,10 +14,14 @@ audec_format s16
 audio_buffer 20-160
 audio_silence -35.0
 audio_telev_pt 101
+# The tunnel adds a second hop and a mobile network adds bursts: packets that arrive late and out of
+# order are what a caller hears as a hoarse, chopped voice. A deeper adaptive buffer trades a little
+# latency for smooth audio, and it only grows when the path actually needs it.
 audio_jitter_buffer_type adaptive
-audio_jitter_buffer_ms 100-200
-audio_jitter_buffer_size 50
-rtp_stats no
+audio_jitter_buffer_ms 120-400
+audio_jitter_buffer_size 100
+# Keeps RTCP statistics so the call screen can show loss and jitter while the call is running.
+rtp_stats yes
 rtp_timeout 60
 rtp_rxmode thread
 module aaudio.so
