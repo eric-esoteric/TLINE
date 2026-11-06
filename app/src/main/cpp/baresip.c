@@ -1244,7 +1244,9 @@ JNIEXPORT void JNICALL Java_com_tline_phone_Api_ua_1unregister(
     (void)env;
     (void)obj;
     re_thread_enter();
-    ua_unregister((struct ua *)ua);
+    // Closing the registration client lets any in-flight REGISTER finish before
+    // it sends Expires: 0. ua_unregister can create a second request on that client.
+    ua_stop_register((struct ua *)ua);
     re_thread_leave();
 }
 

@@ -66,7 +66,9 @@ add_library(lib_baresip STATIC IMPORTED)
 set_target_properties(lib_baresip PROPERTIES IMPORTED_LOCATION
         ${distribution_DIR}/baresip/lib/${ANDROID_ABI}/libbaresip.a)
 
-add_library(baresip SHARED ${CMAKE_SOURCE_DIR}/baresip.c)
+# Supply the fixed static MWI export before linking the Baresip archive.
+add_library(baresip SHARED ${CMAKE_SOURCE_DIR}/baresip.c ${CMAKE_SOURCE_DIR}/mwi.c)
+set_source_files_properties(mwi.c PROPERTIES COMPILE_DEFINITIONS STATIC)
 
 target_include_directories(baresip PRIVATE
         ${distribution_DIR}/openssl/include
