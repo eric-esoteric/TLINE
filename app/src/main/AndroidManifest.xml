@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <permission android:name="com.tline.phone.permission.TRELAY_SYNC" android:protectionLevel="signature" />
+    <permission android:name="com.tline.phone.permission.TASK_CONTROL" android:protectionLevel="signature" />
+    <uses-permission android:name="com.tline.phone.permission.TRELAY_SYNC" />
+
     <uses-permission android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -141,13 +145,11 @@
             </intent-filter>
         </receiver>
 
-        <!-- TRELAY addresses this receiver by component. A custom permission would look tidier, but a
-             "normal" permission is only granted when the other app is installed after this one, so
-             TRELAY installed first would silently lose the right to speak; the signal itself is
-             harmless (re-register, update the shown route), so the component is the only gate. -->
+        <!-- The compatible TRELAY release shares the TLINE signing certificate. -->
         <receiver
             android:name=".TrelayReceiver"
             android:enabled="true"
+            android:permission="com.tline.phone.permission.TRELAY_SYNC"
             android:exported="true" >
             <intent-filter>
                 <action android:name="com.tline.phone.TRELAY_FAILOVER" />
@@ -164,6 +166,7 @@
             android:name=".TaskReceiver"
             android:enabled="true"
             android:exported="true"
+            android:permission="com.tline.phone.permission.TASK_CONTROL"
             tools:ignore="ExportedReceiver" >
             <intent-filter>
                 <action android:name="com.tline.phone.REGISTER" />
