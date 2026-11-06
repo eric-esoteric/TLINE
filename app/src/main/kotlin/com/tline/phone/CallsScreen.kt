@@ -350,26 +350,9 @@ private fun Calls(
                                             }
                                         }
                                     }
-                                    thirdButtonText.value = ctx.getString(R.string.send_message)
+                                    thirdButtonText.value = if (ua.account.isMobile) "" else ctx.getString(R.string.send_message)
                                     thirdAction.value = {
-                                        if (ua.account.isMobile) {
-                                            if (ua.status != circleGreen.getValue(colorblind)) {
-                                                alertTitle.value = ctx.getString(R.string.notice)
-                                                alertMessage.value = Utils.mobileStatusMessage(ctx, ua.status)
-                                                showAlert.value = true
-                                            }
-                                            else if (!Utils.isDefaultSmsApp(ctx)) {
-                                                    alertTitle.value = ctx.getString(R.string.notice)
-                                                    alertMessage.value =
-                                                        ctx.getString(R.string.enable_default_messaging)
-                                                    showAlert.value = true
-                                                }
-                                            else {
-                                                handleIntent(ctx, viewModel, intent, "message")
-                                                navController.navigateUp()
-                                            }
-                                        }
-                                        else {
+                                        if (!ua.account.isMobile) {
                                             handleIntent(ctx, viewModel, intent, "message")
                                             navController.navigateUp()
                                         }
@@ -576,4 +559,3 @@ fun callTint(direction: Int): Int {
         else -> R.color.colorTrafficYellow
     }
 }
-

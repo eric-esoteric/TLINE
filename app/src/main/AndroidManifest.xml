@@ -30,27 +30,14 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG"
-        tools:ignore="SmsAndCallLogPolicy" />
-    <uses-permission android:name="android.permission.WRITE_CALL_LOG"
-        tools:ignore="SmsAndCallLogPolicy" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:ignore="FullScreenIntentPolicy" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!-- Only an exact alarm may restart a foreground service from the background on Android 12+. -->
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- User-granted precision can improve SIP registration recovery after Android kills the app. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.SEND_SMS"
-        tools:ignore="SmsAndCallLogPolicy" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS"
-        tools:ignore="SmsAndCallLogPolicy" />
-    <uses-permission android:name="android.permission.READ_SMS"
-        tools:ignore="SmsAndCallLogPolicy" />
-    <uses-permission android:name="android.permission.RECEIVE_MMS"
-        tools:ignore="SmsAndCallLogPolicy" />
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -61,6 +48,8 @@
 
     <application
         android:name=".BaresipApp"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:installLocation="internalOnly"
@@ -104,32 +93,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ComposeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <action android:name="android.intent.action.SENDTO" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="mmsto" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.SENDTO" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="mmsto" />
-            </intent-filter>
-        </activity>
-
         <service
             android:name=".BaresipService"
             android:enabled="true"
@@ -165,42 +128,6 @@
                 <action android:name="android.telecom.InCallService" />
             </intent-filter>
         </service>
-
-        <service
-            android:name=".HeadlessSmsSendService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE" >
-            <intent-filter>
-                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="sms" />
-                <data android:scheme="smsto" />
-                <data android:scheme="mms" />
-                <data android:scheme="mmsto" />
-            </intent-filter>
-        </service>
-
-        <receiver
-            android:name=".SmsReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BROADCAST_SMS" >
-            <intent-filter android:priority="999">
-                <action android:name="android.provider.Telephony.SMS_DELIVER" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".MmsReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BROADCAST_WAP_PUSH" >
-            <intent-filter android:priority="999">
-                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
-                <data android:mimeType="application/vnd.wap.mms-message" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name=".BootCompletedReceiver"

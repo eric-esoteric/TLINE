@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="exact_alarm_access">Разрешить точное фоновое восстановление</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="about">О программе</string>
     <string name="add">Добавить</string>
     <string name="add_contact">Добавить контакт</string>

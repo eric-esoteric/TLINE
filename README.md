@@ -12,10 +12,6 @@
   <img src="https://img.shields.io/badge/license-BSD--3--Clause-59636E?style=flat-square" alt="BSD-3-Clause">
 </p>
 
-<p align="center">
-  <img src="docs/tline-screenshot.jpg" width="320" alt="Главный экран TLINE">
-</p>
-
 **TLINE** — Android-клиент SIP-телефонии на базе
 [baresip-studio](https://github.com/juha-h/baresip-studio) и библиотеки
 [baresip](https://github.com/baresip/baresip). От исходного приложения он сохраняет зрелое

@@ -3,6 +3,7 @@ package com.tline.phone
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.Activity.RESULT_OK
 import android.app.role.RoleManager
@@ -1303,13 +1304,27 @@ private fun SettingsContent(
         AudioSettings(navController)
         if (VERSION.SDK_INT >= 29) {
             DefaultDialer()
-            DefaultMessaging()
             val defaultDialer by viewModel.defaultDialer.collectAsState()
-            val defaultMessaging by viewModel.defaultMessaging.collectAsState()
-            if (!defaultDialer && !defaultMessaging) BatteryOptimizations()
+            if (!defaultDialer) BatteryOptimizations()
         }
         else
             BatteryOptimizations()
+        val ctx = LocalContext.current
+        if (VERSION.SDK_INT >= 31) {
+            Text(
+                text = stringResource(R.string.exact_alarm_access),
+                modifier = Modifier.fillMaxWidth().clickable {
+                    val alarms = ctx.getSystemService(AlarmManager::class.java)
+                    if (alarms != null && !alarms.canScheduleExactAlarms()) {
+                        try {
+                            ctx.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                Uri.parse("package:${ctx.packageName}")))
+                        } catch (_: Exception) { }
+                    }
+                },
+                fontSize = 18.sp
+            )
+        }
         DarkTheme()
         if (VERSION.SDK_INT >= 31) DynamicColors()
         ColorBlind()
@@ -1318,6 +1333,16 @@ private fun SettingsContent(
         val debug by viewModel.debug.collectAsState()
         if (debug) SipTrace()
         Reset(onRestartApp)
+        Text(
+            text = stringResource(R.string.privacy_policy),
+            modifier = Modifier.fillMaxWidth().clickable {
+                try {
+                    ctx.startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/eric-esoteric/TLINE/blob/master/PrivacyPolicy.txt")))
+                } catch (_: Exception) { }
+            },
+            fontSize = 18.sp
+        )
     }
 }
 

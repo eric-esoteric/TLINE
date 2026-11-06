@@ -928,16 +928,8 @@ private fun BottomBar(ctx: Context, viewModel: ViewModel, navController: NavCont
             )
 
             DockedToolbarItem(
-                enabled = aor.isNotEmpty(),
-                onClick = {
-                    if (isMobile && !Utils.isDefaultSmsApp(ctx)) {
-                        alertTitle.value = ctx.getString(R.string.notice)
-                        alertMessage.value = ctx.getString(R.string.enable_default_messaging)
-                        showAlert.value = true
-                    }
-                    else
-                        navController.navigate("chats/$aor")
-                },
+                enabled = aor.isNotEmpty() && !isMobile,
+                onClick = { navController.navigate("chats/$aor") },
                 icon = Icons.AutoMirrored.Filled.Chat,
                 contentDescription = chatsLabel,
                 iconSize = iconSize,
@@ -3450,4 +3442,3 @@ private fun restore(ctx: Context, password: String, onRestartApp: () -> Unit) {
 
     downloadsInputUri = null
 }
-

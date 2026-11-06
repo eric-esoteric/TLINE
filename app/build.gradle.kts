@@ -13,8 +13,8 @@ configure<ApplicationExtension> {
         applicationId = "com.tline.phone"
         minSdk = 28
         targetSdk = 36
-        versionCode = 553
-        versionName = "91.0.0"
+        versionCode = 554
+        versionName = "1.0.1"
         @Suppress("UnstableApiUsage")
         externalNativeBuild {
             cmake {

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="exact_alarm_access">Allow precise background recovery alarms</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="app_name" translatable="false">TLINE</string>
     <string name="app_name_plus" translatable="false">TLINE</string>
     <!-- About Activity -->

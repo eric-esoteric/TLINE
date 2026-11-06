@@ -82,7 +82,11 @@ object Trelay {
         lastFailoverAt.value = System.currentTimeMillis()
         if (!BaresipService.isServiceRunning || !BaresipService.isNativeReady) {
             Log.i(TAG, "Trelay: $why, but the service is not running - starting it")
-            start(context)
+            try {
+                start(context)
+            } catch (e: Exception) {
+                Log.e(TAG, "Trelay: could not start the service: $e")
+            }
             return
         }
         Log.i(TAG, "Trelay: $why - resetting SIP transports and registering again")
@@ -125,14 +129,10 @@ object Trelay {
 
     fun start(context: Context) {
         if (TelephonyPower.isPaused(context)) return
-        try {
-            ContextCompat.startForegroundService(
-                context,
-                Intent(context, BaresipService::class.java).apply { action = "Start" }
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "Trelay: could not start the service: $e")
-        }
+        ContextCompat.startForegroundService(
+            context,
+            Intent(context, BaresipService::class.java).apply { action = "Start" }
+        )
     }
 }
 
